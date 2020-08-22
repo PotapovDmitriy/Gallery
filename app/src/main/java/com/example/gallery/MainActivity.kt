@@ -2,6 +2,7 @@ package com.example.gallery
 
 import android.content.Context
 import android.content.Intent
+import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,12 +11,19 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import org.json.JSONObject
+import java.io.IOException
+import com.example.gallery.MainActivity.ImageGalleryAdapter as ImageGalleryAdapter1
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var imageGalleryAdapter: ImageGalleryAdapter
+    private lateinit var imageGalleryAdapter: ImageGalleryAdapter1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +33,13 @@ class MainActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.rv_images)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = layoutManager
-        imageGalleryAdapter = ImageGalleryAdapter(this, SunsetPhoto.getSunsetPhotos())
+
+        var task = AsyncRequest()
+        var models  = task.execute().get()
+        imageGalleryAdapter = ImageGalleryAdapter(this, models)
+        // доделать с возвращением своей модели, так же переделать эту модель под Parcelable
+//        imageGalleryAdapter = ImageGalleryAdapter(this, SunsetPhoto.getSunsetPhotos())
+
     }
 
     override fun onStart() {
@@ -33,17 +47,23 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = imageGalleryAdapter
     }
 
-    private inner class ImageGalleryAdapter(val context: Context, val sunsetPhotos: Array<SunsetPhoto>)
-        : RecyclerView.Adapter<ImageGalleryAdapter.MyViewHolder>() {
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageGalleryAdapter.MyViewHolder {
+
+
+
+
+
+    private inner class ImageGalleryAdapter(val context: Context, val sunsetPhotos: List<ImageModel>)
+        : RecyclerView.Adapter<ImageGalleryAdapter1.MyViewHolder>() {
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageGalleryAdapter1.MyViewHolder {
             val context = parent.context
             val inflater = LayoutInflater.from(context)
             val photoView = inflater.inflate(R.layout.item_image, parent, false)
             return MyViewHolder(photoView)
         }
 
-        override fun onBindViewHolder(holder: ImageGalleryAdapter.MyViewHolder, position: Int) {
+        override fun onBindViewHolder(holder: ImageGalleryAdapter1.MyViewHolder, position: Int) {
             val sunsetPhoto = sunsetPhotos[position]
             val imageView = holder.photoImageView
 

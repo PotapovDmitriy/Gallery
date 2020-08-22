@@ -8,11 +8,11 @@ import com.squareup.picasso.Picasso
 class ImageActivity : AppCompatActivity() {
 
     companion object {
-        const val EXTRA_SUNSET_PHOTO = "SunsetPhotoActivity.EXTRA_SUNSET_PHOTO"
+        const val EXTRA_SUNSET_PHOTO = "ImageActivity.EXTRA_SUNSET_PHOTO"
     }
 
     private lateinit var imageView: ImageView
-    private lateinit var photo: SunsetPhoto
+    private lateinit var photo: ImageModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
