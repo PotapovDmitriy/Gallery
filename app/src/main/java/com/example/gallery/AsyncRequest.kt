@@ -19,10 +19,8 @@ class AsyncRequest : AsyncTask<String, Void, List<ImageModel>>() {
             e.printStackTrace()
         }
         val jsonData = responses!!.body()!!.string()
-        println(jsonData.length)
         val gson = GsonBuilder().create()
         val models = gson.fromJson(jsonData, Array<ImageModel>::class.java).toList()
-        println(models[0].url)
         return models
     }
 

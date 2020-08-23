@@ -32,25 +32,21 @@ class MainActivity : AppCompatActivity() {
         val layoutManager = GridLayoutManager(this, 2)
         recyclerView = findViewById(R.id.rv_images)
         recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = layoutManager
-
-        var task = AsyncRequest()
-        var models  = task.execute().get()
-        imageGalleryAdapter = ImageGalleryAdapter(this, models)
-        // доделать с возвращением своей модели, так же переделать эту модель под Parcelable
-//        imageGalleryAdapter = ImageGalleryAdapter(this, SunsetPhoto.getSunsetPhotos())
-
+        try {
+            recyclerView.layoutManager = layoutManager
+            val task = AsyncRequest()
+            val models  = task.execute().get()
+            imageGalleryAdapter = ImageGalleryAdapter(this, models)
+        }catch (e: Exception){
+            val intent = Intent(this, ErrorActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     override fun onStart() {
         super.onStart()
         recyclerView.adapter = imageGalleryAdapter
     }
-
-
-
-
-
 
 
     private inner class ImageGalleryAdapter(val context: Context, val sunsetPhotos: List<ImageModel>)
@@ -69,15 +65,13 @@ class MainActivity : AppCompatActivity() {
 
             Picasso.get()
                 .load(sunsetPhoto.url)
-                .placeholder(R.drawable.placeholder)
-                .error(R.drawable.error)
+                .placeholder(R.drawable.ic_download)
+                .error(R.drawable.ic_download)
                 .fit()
                 .into(imageView)
         }
 
-        override fun getItemCount(): Int {
-            return sunsetPhotos.size
-        }
+        override fun getItemCount(): Int = sunsetPhotos.size
 
         inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
@@ -92,7 +86,7 @@ class MainActivity : AppCompatActivity() {
                 if (position != RecyclerView.NO_POSITION) {
                     val sunsetPhoto = sunsetPhotos[position]
                     val intent = Intent(context, ImageActivity::class.java).apply {
-                        putExtra(ImageActivity.EXTRA_SUNSET_PHOTO, sunsetPhoto)
+                        putExtra(ImageActivity.EXTRA_PHOTO, sunsetPhoto)
                     }
                     startActivity(intent)
                 }
