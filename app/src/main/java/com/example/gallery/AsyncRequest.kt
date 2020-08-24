@@ -20,8 +20,7 @@ class AsyncRequest : AsyncTask<String, Void, List<ImageModel>>() {
         }
         val jsonData = responses!!.body()!!.string()
         val gson = GsonBuilder().create()
-        val models = gson.fromJson(jsonData, Array<ImageModel>::class.java).toList()
-        return models
+        return gson.fromJson(jsonData, Array<ImageModel>::class.java).toList()
     }
 
     override fun onPostExecute(list : List<ImageModel>) {

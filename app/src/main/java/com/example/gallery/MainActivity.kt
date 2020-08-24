@@ -35,9 +35,9 @@ class MainActivity : AppCompatActivity() {
         try {
             recyclerView.layoutManager = layoutManager
             val task = AsyncRequest()
-            val models  = task.execute().get()
+            val models = task.execute().get()
             imageGalleryAdapter = ImageGalleryAdapter(this, models)
-        }catch (e: Exception){
+        } catch (e: Exception) {
             val intent = Intent(this, ErrorActivity::class.java)
             startActivity(intent)
         }
@@ -49,10 +49,15 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private inner class ImageGalleryAdapter(val context: Context, val sunsetPhotos: List<ImageModel>)
-        : RecyclerView.Adapter<ImageGalleryAdapter1.MyViewHolder>() {
+    private inner class ImageGalleryAdapter(
+        val context: Context,
+        val sunsetPhotos: List<ImageModel>
+    ) : RecyclerView.Adapter<ImageGalleryAdapter1.MyViewHolder>() {
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageGalleryAdapter1.MyViewHolder {
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            viewType: Int
+        ): ImageGalleryAdapter1.MyViewHolder {
             val context = parent.context
             val inflater = LayoutInflater.from(context)
             val photoView = inflater.inflate(R.layout.item_image, parent, false)
@@ -73,7 +78,8 @@ class MainActivity : AppCompatActivity() {
 
         override fun getItemCount(): Int = sunsetPhotos.size
 
-        inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+            View.OnClickListener {
 
             var photoImageView: ImageView = itemView.findViewById(R.id.iv_photo)
 
