@@ -2,7 +2,6 @@ package com.example.gallery
 
 import android.content.Context
 import android.content.Intent
-import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,13 +10,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import org.json.JSONObject
-import java.io.IOException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.async
 import com.example.gallery.MainActivity.ImageGalleryAdapter as ImageGalleryAdapter1
 
 class MainActivity : AppCompatActivity() {
@@ -34,8 +30,13 @@ class MainActivity : AppCompatActivity() {
         recyclerView.setHasFixedSize(true)
         try {
             recyclerView.layoutManager = layoutManager
-            val task = AsyncRequest()
-            val models = task.execute().get()
+
+            val models = CoroutineScope(IO).async() {
+                AsyncRequest.doInBackground()
+            }.await()
+//
+//            val task = AsyncRequest()
+//            val models = task.execute().get()
             imageGalleryAdapter = ImageGalleryAdapter(this, models)
         } catch (e: Exception) {
             val intent = Intent(this, ErrorActivity::class.java)
