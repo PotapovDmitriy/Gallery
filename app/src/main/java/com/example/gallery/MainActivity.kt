@@ -30,13 +30,8 @@ class MainActivity : AppCompatActivity() {
         recyclerView.setHasFixedSize(true)
         try {
             recyclerView.layoutManager = layoutManager
-
-            val models = CoroutineScope(IO).async() {
-                AsyncRequest.doInBackground()
-            }.await()
-//
-//            val task = AsyncRequest()
-//            val models = task.execute().get()
+            val task = AsyncRequest()
+            val models = task.execute().get()
             imageGalleryAdapter = ImageGalleryAdapter(this, models)
         } catch (e: Exception) {
             val intent = Intent(this, ErrorActivity::class.java)

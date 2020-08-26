@@ -7,43 +7,25 @@ import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
 
-class AsyncRequest {
 
-    companion object {
-        suspend fun doInBackground(vararg params: String?): List<ImageModel> {
-            val request =
-                Request.Builder().url("https://jsonplaceholder.typicode.com/albums/1/photos")
-                    .build()
-            val client = OkHttpClient()
-            var responses: Response? = null
-            try {
-                responses = client.newCall(request).execute()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-            val jsonData = responses!!.body()!!.string()
-            val gson = GsonBuilder().create()
-            return gson.fromJson(jsonData, Array<ImageModel>::class.java).toList()
+class AsyncRequest : AsyncTask<String, Void, List<ImageModel>>() {
+
+    override fun doInBackground(vararg params: String?): List<ImageModel> {
+        val request =
+            Request.Builder().url("https://jsonplaceholder.typicode.com/albums/1/photos").build()
+        val client = OkHttpClient()
+        var responses: Response? = null
+        try {
+            responses = client.newCall(request).execute()
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
+        val jsonData = responses!!.body()!!.string()
+        val gson = GsonBuilder().create()
+        return gson.fromJson(jsonData, Array<ImageModel>::class.java).toList()
+    }
+
+    override fun onPostExecute(list: List<ImageModel>) {
+        print("THE ENDS ")
     }
 }
-//class AsyncRequest : AsyncTask<String, Void, List<ImageModel>>() {
-//
-//    override fun doInBackground(vararg params: String?): List<ImageModel> {
-//        val request = Request.Builder().url("https://jsonplaceholder.typicode.com/albums/1/photos").build()
-//        val client = OkHttpClient()
-//        var responses: Response? = null
-//        try {
-//            responses = client.newCall(request).execute()
-//        } catch (e: IOException) {
-//            e.printStackTrace()
-//        }
-//        val jsonData = responses!!.body()!!.string()
-//        val gson = GsonBuilder().create()
-//        return gson.fromJson(jsonData, Array<ImageModel>::class.java).toList()
-//    }
-//
-//    override fun onPostExecute(list : List<ImageModel>) {
-//        print("THE ENDS ")
-//    }
-//}
