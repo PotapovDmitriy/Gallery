@@ -11,60 +11,55 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.async
-import com.example.gallery.MainActivity.ImageGalleryAdapter as ImageGalleryAdapter1
+import kotlinx.coroutines.*
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var imageGalleryAdapter: ImageGalleryAdapter1
+    private lateinit var imageGalleryAdapter: ImageGalleryAdapter
+    private lateinit var mContext: Context
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        mContext = this
 
         val layoutManager = GridLayoutManager(this, 2)
         recyclerView = findViewById(R.id.rv_images)
         recyclerView.setHasFixedSize(true)
         try {
             recyclerView.layoutManager = layoutManager
-            val models = CoroutineScope(IO).async() {
-                AsyncRequest.doInBackground()
-            }.await()
+            val models = asyncRequest()
+            runBlocking { imageGalleryAdapter = ImageGalleryAdapter(mContext, models.await()) }
+            recyclerView.adapter = imageGalleryAdapter
 
-//            val task = AsyncRequest()
-//            val models = task.execute().get()
-            imageGalleryAdapter = ImageGalleryAdapter(this, models)
         } catch (e: Exception) {
             val intent = Intent(this, ErrorActivity::class.java)
             startActivity(intent)
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        recyclerView.adapter = imageGalleryAdapter
+    fun asyncRequest() = GlobalScope.async {
+        RequestToAPI.doInBackground()
     }
 
 
     private inner class ImageGalleryAdapter(
         val context: Context,
         val sunsetPhotos: List<ImageModel>
-    ) : RecyclerView.Adapter<ImageGalleryAdapter1.MyViewHolder>() {
+    ) : RecyclerView.Adapter<ImageGalleryAdapter.MyViewHolder>() {
 
         override fun onCreateViewHolder(
             parent: ViewGroup,
             viewType: Int
-        ): ImageGalleryAdapter1.MyViewHolder {
+        ): ImageGalleryAdapter.MyViewHolder {
             val context = parent.context
             val inflater = LayoutInflater.from(context)
             val photoView = inflater.inflate(R.layout.item_image, parent, false)
             return MyViewHolder(photoView)
         }
 
-        override fun onBindViewHolder(holder: ImageGalleryAdapter1.MyViewHolder, position: Int) {
+        override fun onBindViewHolder(holder: ImageGalleryAdapter.MyViewHolder, position: Int) {
             val sunsetPhoto = sunsetPhotos[position]
             val imageView = holder.photoImageView
 
