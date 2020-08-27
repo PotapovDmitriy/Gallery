@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
 
     private inner class ImageGalleryAdapter(
         val context: Context,
-        val sunsetPhotos: List<ImageModel>
+        val photos: List<ImageModel>
     ) : RecyclerView.Adapter<ImageGalleryAdapter.MyViewHolder>() {
 
         override fun onCreateViewHolder(
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: ImageGalleryAdapter.MyViewHolder, position: Int) {
-            val sunsetPhoto = sunsetPhotos[position]
+            val sunsetPhoto = photos[position]
             val imageView = holder.photoImageView
 
             Picasso.get()
@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
                 .into(imageView)
         }
 
-        override fun getItemCount(): Int = sunsetPhotos.size
+        override fun getItemCount(): Int = photos.size
 
         inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
             View.OnClickListener {
@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
             override fun onClick(view: View) {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
-                    val sunsetPhoto = sunsetPhotos[position]
+                    val sunsetPhoto = photos[position]
                     val intent = Intent(context, ImageActivity::class.java).apply {
                         putExtra(ImageActivity.EXTRA_PHOTO, sunsetPhoto)
                     }
